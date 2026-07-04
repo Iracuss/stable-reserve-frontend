@@ -28,6 +28,9 @@ export default function LoginPage() {
 
     return (
         <div>
+            
+            {error == null ? <></> : <h2>{error}</h2>}
+
             <form onSubmit={handleSubmit} className="flex flex-col gap-5">
                 <div>
                     <input 
@@ -55,7 +58,7 @@ export default function LoginPage() {
                         type="submit" // Triggers the form's onSubmit handler
                         className="flex-1 h-11 bg-black hover:bg-gray-800 text-white font-medium rounded-xl transition-colors"
                     >
-                        Register
+                        Login
                     </button>
                 </div>
             </form>
