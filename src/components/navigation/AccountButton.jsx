@@ -1,18 +1,21 @@
 import { Link } from "react-router-dom";
+import { useAuth } from "../AuthContext";
 
 export default function AccountButton() {
-    const savedUser = JSON.parse(localStorage.getItem("user_info"));
+    const {user, logoutUser} = useAuth();
 
 
     return (
         <div className="">
-            {!savedUser ? 
+            {!user ? 
                 <Link
                     to="/auth"
+                    className="inline-block text-xl font-semibold text-white bg-black rounded-full py-2 px-6 hover:bg-gray-800 active:bg-gray-700 transition-colors"
                 >
                     Login
                 </Link> :
-                <p>savedUser.username</p>
+                <button onClick={logoutUser}
+                >{user.username}</button>
             }
 
         </div>

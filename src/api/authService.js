@@ -3,11 +3,12 @@ import { apiClient } from "./client";
 export const login = async (credentials) => {
     try {
         const response = await apiClient.post('/auth/login', credentials);
-        const {token, user} = response.data;
+        const token = response.data;
 
         if(token) {
             localStorage.setItem("jwt_token", token);
-            localStorage.setItem("user_info", JSON.stringify(user));
+
+            // localStorage.setItem("user_info", JSON.stringify(user));
         }
 
         return response.data

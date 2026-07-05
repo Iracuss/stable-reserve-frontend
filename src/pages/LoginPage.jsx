@@ -1,6 +1,8 @@
 import { useState } from "react"
 import { login } from "../api/authService";
 import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../components/AuthContext";
+import { getMyAccount } from "../api/userService";
 
 export default function LoginPage() {
     const [password, setPassword] = useState('');
@@ -8,6 +10,7 @@ export default function LoginPage() {
     const [error, setError] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
 
+    const {loginUser} = useAuth();
     const nav = useNavigate();
 
     const handleSubmit = async (e) => {
@@ -17,7 +20,9 @@ export default function LoginPage() {
 
         try {
             const data = await login({username, password});
+            const user = await getMyAccount();
 
+            loginUser(user);
             nav("/");
         } catch(err) {
             setError("Invalid credentials. Please try again.");
@@ -28,7 +33,7 @@ export default function LoginPage() {
 
     return (
         <div>
-            
+
             {error == null ? <></> : <h2>{error}</h2>}
 
             <form onSubmit={handleSubmit} className="flex flex-col gap-5">
