@@ -1,3 +1,5 @@
+import horseIcon from "../../assets/horse-icon.png"
+
 export default function HorseTab({horseData, onTabClick, onAddHorse}) {
     return (
         <div 
@@ -10,7 +12,10 @@ export default function HorseTab({horseData, onTabClick, onAddHorse}) {
         >
 
             <div className="w-14 h-14 bg-gray-300 rounded-full shrink-0">
-                {/* <img /> */}
+                <img 
+                    src={horseIcon}
+                    className="w-14 h-14 bg-gray-300 rounded-full shrink-0"
+                />
             </div>
 
             <p className="flex-1 font-sans text-center text-xl font-medium text-gray-800">

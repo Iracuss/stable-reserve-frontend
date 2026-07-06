@@ -14,6 +14,13 @@ export default function DashboardPage() {
     const [selectedHorse, setSelectedHorse] = useState(null);
     const [isCreating, setIsCreating] = useState(false);
 
+    const handleHorseDelete = (deletedHorseId) => {
+        setHorses(prevHorses => prevHorses.filter(h => h.id !== deletedHorseId));
+        if(selectedHorse.id === deletedHorseId) {
+            setSelectedHorse(null);
+        }
+    }
+
     useEffect(() => {
         getAllHorses()
         .then((data) => {
@@ -47,15 +54,18 @@ export default function DashboardPage() {
         <div className="flex flex-col h-screen bg-gray-50 overflow-hidden">
             <div className="flex flex-1 overflow-hidden">
                 <SideBar 
-                horses={horses} 
-                onSelectedHorse={setSelectedHorse} 
-                onAddHorse={setIsCreating}
+                    horses={horses} 
+                    onSelectedHorse={setSelectedHorse} 
+                    onAddHorse={setIsCreating}
                 />
                 {isCreating ? 
                 <AddHorse 
-                onSave={handleSaveHorse} 
-                onCancel={() => setIsCreating(false)} /> : 
-                <HorseContent horse={selectedHorse} />}
+                    onSave={handleSaveHorse} 
+                    onCancel={() => setIsCreating(false)} /> : 
+                <HorseContent 
+                    horse={selectedHorse}
+                    onDeleteSuccess={handleHorseDelete}
+                />}
                 
             </div>
         </div>
