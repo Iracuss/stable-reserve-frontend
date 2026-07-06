@@ -6,8 +6,10 @@ import HorseContent from '../components/dashboard/HorseContent';
 import AddHorse from '../components/dashboard/AddHorse';
 import { Route, Routes } from 'react-router-dom';
 import LoginPage from './LoginPage';
+import { useAuth } from '../components/AuthContext';
 
 export default function DashboardPage() {
+    const {user} = useAuth();
 
     const [horses, setHorses] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
@@ -22,6 +24,12 @@ export default function DashboardPage() {
     }
 
     useEffect(() => {
+        if(!user) {
+            setHorses([]);
+            setIsLoading(false);
+            return;
+        }
+        setIsLoading(true);
         getAllHorses()
         .then((data) => {
             setHorses(data);
@@ -32,7 +40,7 @@ export default function DashboardPage() {
             console.error('Failed to get all horses:', err);
             setIsLoading(false);
         });
-    }, []);
+    }, [user]);
 
     const handleSaveHorse = (newHorseData) => {
         console.log("Data ready for Spring Boot backend:", newHorseData);
