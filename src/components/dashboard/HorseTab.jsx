@@ -15,6 +15,7 @@ export default function HorseTab({horseData, onTabClick, onAddHorse}) {
                 <img 
                     src={horseIcon}
                     className="w-14 h-14 border-2 border-black-700 bg-gray-300 rounded-full shrink-0"
+                    alt="horse icon"
                 />
             </div>
 
