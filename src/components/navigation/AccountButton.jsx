@@ -4,7 +4,6 @@ import { useState } from "react";
 import DropAccountButton from "./DropAccountButton";
 
 export default function AccountButton() {
-
     const [isOpen, setIsOpen] = useState(false);
     const {user, logoutUser} = useAuth();
 
@@ -13,7 +12,7 @@ export default function AccountButton() {
             {!user ? 
                 <Link
                     to="/auth"
-                    className="inline-block text-xl font-semibold text-white bg-black rounded-full py-2 px-6 hover:bg-gray-800 active:bg-gray-700 transition-colors"
+                    className="inline-block text-xl font-semibold text-white bg-black rounded-xl py-2 px-12 hover:bg-gray-800 active:bg-gray-700 transition-colors"
                 >
                     Login
                 </Link> :
@@ -30,9 +29,7 @@ export default function AccountButton() {
                         </div>
                     )}
                 </>
-
             }
-
         </div>
     );
 }

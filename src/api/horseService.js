@@ -35,6 +35,16 @@ export const deleteHorse = async (horseId) => {
     }
 }
 
+export const updateHorse = async (horseId, horseData) => {
+    try {
+        const response = await apiClient.put(`/horses/${horseId}`, horseData);
+        return response.data;
+    } catch(error) {
+        console.error('Error updating horse:', error);
+        throw error;
+    }
+}
+
 // export const getHorseLogs = async (horseId) => {
 //     try {
 //         const response = await apiClient.get(`feeding-logs/horse/${horseId}`);

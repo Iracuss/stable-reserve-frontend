@@ -103,7 +103,6 @@ export default function AddHorse({onSave, onCancel}) {
                         <label className="block text-sm font-medium text-gray-600 mb-1">Microchip ID</label>
                         <input 
                             type="text"
-                            required
                             value={microchipId}
                             onChange={(e) => setMicrochipId(e.target.value)}
                             className="w-full border border-gray-300 rounded-xl p-3 focus:outline-none focus:border-black"

@@ -3,6 +3,7 @@ import LoginPage from './pages/LoginPage';
 import DashboardPage from './pages/DashboardPage';
 import TopBar from './components/navigation/TopBar';
 import RegisterPage from './pages/RegisterPage';
+import AccountPage from './pages/AccountPage';
 
 function App() {
 
@@ -14,6 +15,7 @@ function App() {
           <Route path='/' element={<DashboardPage />} />
           <Route path='/auth' element={<LoginPage />} />
           <Route path='/register' element={<RegisterPage />} />
+          <Route path='/me' element={<AccountPage />} />
         </Routes>
       </div>
     </BrowserRouter>

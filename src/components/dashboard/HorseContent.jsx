@@ -2,11 +2,12 @@ import { useState } from "react";
 import HorseContentTitle from "./HorseContentTitle";
 import HorseOverview from "./HorseOverview";
 import { deleteHorse } from "../../api/horseService";
+import HorseEdit from "./HorseEdit";
 
-export default function HorseContent({horse, onDeleteSuccess}) {
+export default function HorseContent({horse, onDeleteSuccess, onEdit}) {
 
     const [activeTab, setActiveTab] = useState('overview');
-    const [delHorse, setDelHorse] = useState('false');
+
 
     if(!horse) {
         return (
@@ -41,9 +42,21 @@ export default function HorseContent({horse, onDeleteSuccess}) {
                 <div className="flex gap-8 pb-2">
                     <button
                         onClick={() => setActiveTab('overview')}
-                        className={`font-bold text-lg ${activeTab === 'overview' ? 'text-black border-b-2 border-black' : 'text-gray-400'}`}
+                        className={`font-bold text-lg ${activeTab === 'overview' ? 'text-black border-b-2 border-black' : 'text-gray-400 hover:text-gray-500 transition-colors'}`}
                     >
                         Overview
+                    </button>
+                    <button
+                        onClick={() => setActiveTab('dates')}
+                        className={`font-bold text-lg ${activeTab === 'dates' ? 'text-black border-b-2 border-black' : 'text-gray-400 hover:text-gray-500 transition-colors'}`}
+                    >
+                        Coggins & Farrier
+                    </button>
+                    <button
+                        onClick={() => setActiveTab('edit')}
+                        className={`font-bold text-lg ${activeTab === 'edit' ? 'text-blue-400 border-b-2 border-blue-400' : 'text-gray-400 hover:text-gray-500 transition-colors'}`}
+                    >
+                        Edit
                     </button>
                     <button
                         onClick={() => deleteCurrentHorse(horse.id)}
@@ -55,6 +68,7 @@ export default function HorseContent({horse, onDeleteSuccess}) {
 
                 <div className="w-full bg-white shadow-sm rounded-xl border border-gray-200 p-8">
                     {activeTab === 'overview' && <HorseOverview horse={horse} key={horse.id} />}
+                    {activeTab === 'edit' && <HorseEdit horse={horse} key={horse.id} onEdit={onEdit} setActiveTab={setActiveTab} />}
                 </div>
             </div>
         </div>

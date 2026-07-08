@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { getAllHorses, createHorse } from '../api/horseService';
+import { getAllHorses, createHorse, updateHorse } from '../api/horseService';
 import TopApp from '../components/navigation/TopBar';
 import SideBar from '../components/dashboard/SideBar';
 import HorseContent from '../components/dashboard/HorseContent';
@@ -23,6 +23,14 @@ export default function DashboardPage() {
         }
     }
 
+    const handleHorseEdit = (editedHorseData) => {
+        setHorses(prevHorses => prevHorses.map(h => 
+            h.id === editedHorseData.id ? editedHorseData : h
+        ));
+        setSelectedHorse(editedHorseData);
+        console.log(`clicked edit on ${editedHorseData}`)
+    }
+
     useEffect(() => {
         if(!user) {
             setHorses([]);
@@ -43,20 +51,19 @@ export default function DashboardPage() {
     }, [user]);
 
     const handleSaveHorse = (newHorseData) => {
-        console.log("Data ready for Spring Boot backend:", newHorseData);
         createHorse(newHorseData)
             .then((savedHorse) => {
-            setHorses([...horses, savedHorse]);
-            setSelectedHorse(savedHorse);
-            setIsCreating(false);
+                setHorses([...horses, savedHorse]);
+                setSelectedHorse(savedHorse);
+                setIsCreating(false);
             })
             .catch((err) => {
-            console.error("Failed to save horse to database:", err)
-            alert("Could not save horse. Make sure your backend server is running!");
+                console.error("Failed to save horse to database:", err)
+                alert("Could not save horse. Make sure your backend server is running!");
             })
     };
 
-    if (isLoading) return <div className="p-10 text-center">Loading your stable...</div>;
+    if(isLoading) return <div className="p-10 text-center">Loading your stable...</div>;
 
     return (
         <div className="flex flex-col h-screen bg-gray-50 overflow-hidden">
@@ -73,6 +80,7 @@ export default function DashboardPage() {
                 <HorseContent 
                     horse={selectedHorse}
                     onDeleteSuccess={handleHorseDelete}
+                    onEdit={handleHorseEdit}
                 />}
                 
             </div>
