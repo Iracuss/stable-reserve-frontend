@@ -23,7 +23,11 @@ export default function AccountEditForm({setIsEditing}) {
             setIsEditing(false);
             nav("/auth");
             logoutUser();
+
+            // Display custom alert
         } catch(error) {
+            // This is for when the username or email is the same
+            // Display alert
             setIsEditing(false);
         }
     }
@@ -33,7 +37,7 @@ export default function AccountEditForm({setIsEditing}) {
             <form onSubmit={handleSubmit} className="gap-3 w-full flex flex-col">
                 <div className="flex flex-row gap-3">
                     <div className="flex-1 flex-col">
-                        <h1 className="pb-1 pl-1">Username</h1>
+                        <h1 className="pb-1 pl-1 font-semibold">Username</h1>
                         <input 
                             type="text"
                             required
@@ -44,7 +48,7 @@ export default function AccountEditForm({setIsEditing}) {
                         />
                     </div>
                     <div className="flex-1 flex-col">
-                    <h1 className="pb-1 pl-1">Email</h1>
+                    <h1 className="pb-1 pl-1 font-semibold">Email</h1>
                         <input 
                             type="text"
                             required

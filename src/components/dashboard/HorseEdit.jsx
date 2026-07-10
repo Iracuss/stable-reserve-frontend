@@ -27,7 +27,7 @@ export default function HorseEdit({horse, onEdit, setActiveTab}) {
         }
 
         await updateHorse(horse.id, horseData);
-        onEdit(horseData);
+        onEdit({...horse, ...horseData});
         setActiveTab('overview');
     }
 

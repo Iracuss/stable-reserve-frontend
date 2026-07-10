@@ -14,6 +14,8 @@ export default function AccountDeleteButtons({setIsDeleting}) {
         nav('/');
         await deleteAccount(user.id);
         logoutUser();
+
+        // Display custom alert
     }
 
     return (

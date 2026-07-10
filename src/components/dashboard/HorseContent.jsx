@@ -3,6 +3,7 @@ import HorseContentTitle from "./HorseContentTitle";
 import HorseOverview from "./HorseOverview";
 import { deleteHorse } from "../../api/horseService";
 import HorseEdit from "./HorseEdit";
+import HorseDates from "./HorseDates";
 
 export default function HorseContent({horse, onDeleteSuccess, onEdit}) {
 
@@ -68,7 +69,8 @@ export default function HorseContent({horse, onDeleteSuccess, onEdit}) {
 
                 <div className="w-full bg-white shadow-sm rounded-xl border border-gray-200 p-8">
                     {activeTab === 'overview' && <HorseOverview horse={horse} key={horse.id} />}
-                    {activeTab === 'edit' && <HorseEdit horse={horse} key={horse.id} onEdit={onEdit} setActiveTab={setActiveTab} />}
+                    {activeTab === 'dates' && <HorseDates horse={horse} key={horse.id} onEdit={onEdit} setActiveTab={setActiveTab} />}
+                    {activeTab === 'edit' && <HorseEdit horse={horse} key={horse.id} onEdit={onEdit} />}
                 </div>
             </div>
         </div>
