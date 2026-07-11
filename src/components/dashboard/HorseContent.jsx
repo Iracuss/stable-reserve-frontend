@@ -4,11 +4,11 @@ import HorseOverview from "./HorseOverview";
 import { deleteHorse } from "../../api/horseService";
 import HorseEdit from "./HorseEdit";
 import HorseDates from "./HorseDates";
+import { isOverdue } from "../utils/dateHelper";
 
 export default function HorseContent({horse, onDeleteSuccess, onEdit}) {
 
     const [activeTab, setActiveTab] = useState('overview');
-
 
     if(!horse) {
         return (
@@ -19,6 +19,9 @@ export default function HorseContent({horse, onDeleteSuccess, onEdit}) {
             </main>
         );
     }
+
+    const cogginsWarning = isOverdue(horse.lastCogginDate, 365);
+    const farrierWarning = isOverdue(horse.lastFarrierDate, 42);
 
     const deleteCurrentHorse = async (horseId) => {
         try {
@@ -34,8 +37,16 @@ export default function HorseContent({horse, onDeleteSuccess, onEdit}) {
     }
 
     return (
-        <div key={horse.id} className="flex flex-col pt-8 pb-8 flex-1 items-center h-full overflow-y-auto">
+        <div key={horse.id} className={`flex flex-col pt-${cogginsWarning || farrierWarning ? '6' : '8'} pb-8 flex-1 items-center h-full overflow-y-auto`}>
             <div className="w-full max-w-5xl flex flex-col gap-6 items-center">
+                {cogginsWarning && farrierWarning ? (
+                    <h1 className="font-bold text-2xl text-white bg-red-800 px-4 py-2 rounded-xl">Coggins and Farrier Overdue</h1>
+                ) : (
+                    <>
+                        {cogginsWarning && <h1 className="font-bold text-2xl text-white bg-orange-600 px-4 py-2 rounded-xl">Coggins Overdue</h1>}
+                        {farrierWarning && <h1 className="font-bold text-2xl text-white bg-orange-600 px-4 py-2 rounded-xl">Farrier Overdue</h1>}
+                    </>
+                )}
                 <div className="w-full bg-gray-200 shadow-lg rounded-xl max-w-5xl p-8 h-fit">
                     <HorseContentTitle horse={horse}/>
                 </div>
