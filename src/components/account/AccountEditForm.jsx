@@ -1,14 +1,11 @@
 import { useState } from "react";
 import { useAuth } from "../AuthContext";
-import { useNavigate } from "react-router-dom";
 import { updateAccount } from "../../api/userService";
 
 export default function AccountEditForm({setIsEditing}) {
-    const {user, setUser, logoutUser} = useAuth();
+    const {user, setUser} = useAuth();
     const [username, setUsername] = useState(user.username);
     const [email, setEmail] = useState(user.email);
-
-    const nav = useNavigate();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -19,15 +16,13 @@ export default function AccountEditForm({setIsEditing}) {
         }
         try {
             await updateAccount(updatedUser);
-            setUser({...user, username: username, email: email});
+            setUser({...user, ...updatedUser});
             setIsEditing(false);
-            nav("/auth");
-            logoutUser();
-
             // Display custom alert
+            alert("Updated user");
         } catch(error) {
-            // This is for when the username or email is the same
-            // Display alert
+            console.error("Error updating user: ", error)
+            alert("User with username or email already exists");
             setIsEditing(false);
         }
     }

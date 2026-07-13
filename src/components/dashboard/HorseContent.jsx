@@ -30,6 +30,7 @@ export default function HorseContent({horse, onDeleteSuccess, onEdit}) {
 
             await deleteHorse(horseId);
             onDeleteSuccess(horseId);
+            alert("Deleted horse")
         } catch(error) {
             console.error('Failed to delete horse:', error);
             throw error;
@@ -37,7 +38,7 @@ export default function HorseContent({horse, onDeleteSuccess, onEdit}) {
     }
 
     return (
-        <div key={horse.id} className={`flex flex-col pt-${cogginsWarning || farrierWarning ? '6' : '8'} pb-8 flex-1 items-center h-full overflow-y-auto`}>
+        <div key={horse.id} className={`flex flex-col ${cogginsWarning || farrierWarning ? 'pt-6' : 'pt-8'} pb-8 flex-1 items-center h-full overflow-y-auto`}>
             <div className="w-full max-w-5xl flex flex-col gap-6 items-center">
                 {cogginsWarning && farrierWarning ? (
                     <h1 className="font-bold text-2xl text-white bg-red-800 px-4 py-2 rounded-xl">Coggins and Farrier Overdue</h1>
@@ -80,7 +81,7 @@ export default function HorseContent({horse, onDeleteSuccess, onEdit}) {
 
                 <div className="w-full bg-white shadow-sm rounded-xl border border-gray-200 p-8">
                     {activeTab === 'overview' && <HorseOverview horse={horse} key={horse.id} />}
-                    {activeTab === 'dates' && <HorseDates horse={horse} key={horse.id} onEdit={onEdit} setActiveTab={setActiveTab} />}
+                    {activeTab === 'dates' && <HorseDates horse={horse} key={horse.id} onEdit={onEdit} />}
                     {activeTab === 'edit' && <HorseEdit horse={horse} key={horse.id} onEdit={onEdit} />}
                 </div>
             </div>

@@ -16,6 +16,7 @@ export default function AccountDeleteButtons({setIsDeleting}) {
         logoutUser();
 
         // Display custom alert
+        alert("Deleted user")
     }
 
     return (

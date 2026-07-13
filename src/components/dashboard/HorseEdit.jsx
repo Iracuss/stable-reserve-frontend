@@ -29,6 +29,8 @@ export default function HorseEdit({horse, onEdit, setActiveTab}) {
         await updateHorse(horse.id, horseData);
         onEdit({...horse, ...horseData});
         setActiveTab('overview');
+
+        alert("Edited horse");
     }
 
     const handleMdBredChange = (e) => {

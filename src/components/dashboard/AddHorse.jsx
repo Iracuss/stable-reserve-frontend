@@ -27,6 +27,8 @@ export default function AddHorse({onSave, onCancel}) {
         }
 
         onSave(horseData);
+
+        alert("Added horse");
     }
 
     const handleMdBredChange = (e) => {
