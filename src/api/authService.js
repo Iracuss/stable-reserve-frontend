@@ -28,3 +28,25 @@ export const register = async (userData) => {
         throw error;
     }
 }
+
+export const forgotPassword = async (userEmail) => {
+    try {
+        const response = await apiClient.post('/auth/forgot-password', userEmail);
+
+        return response.data; // Shouldn't return anything
+    } catch(error) {
+        console.error('Error with forgot password:', error);
+        throw error;
+    }
+}
+
+export const resetPassword = async (resetPasswordData) => {
+    try {
+        const response = await apiClient.post('/auth/reset-password', resetPasswordData);
+
+        return response.data; // Shouldn't return anything
+    } catch(error) {
+        console.error('Error with reset password:', error);
+        throw error;
+    }
+}

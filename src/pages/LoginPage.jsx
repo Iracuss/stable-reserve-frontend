@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { login } from "../api/authService";
+import { forgotPassword, login } from "../api/authService";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../components/auth/UseAuth";
 import { getMyAccount } from "../api/userService";
@@ -8,8 +8,10 @@ import horseRunning from '../assets/horse-running.jpg';
 export default function LoginPage() {
     const [password, setPassword] = useState('');
     const [username, setUsername] = useState('');
+    const [email, setEmail] = useState('');
     const [error, setError] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
+    const [onForgot, setOnForgot] = useState(false);
 
     const {loginUser} = useAuth();
     const nav = useNavigate();
@@ -33,61 +35,131 @@ export default function LoginPage() {
         }
     }
 
+    const handleForgotSubmit = async (e) => {
+        e.preventDefault();
+        setIsLoading(true);
+        setError(null);
+
+        try {
+            await forgotPassword({email});
+        } catch(err) {
+            setError("Issue with email.");
+            console.error(err);
+        } finally {
+            setIsLoading(false);
+            setOnForgot(false);
+        }
+    }
+
     if(isLoading) return <div className="p-10 text-center">Logging in...</div>;
 
     return (
         <div className="flex flex-row w-full h-screen">
 
             <div className="flex flex-col flex-1 pb-30 pl-12 pr-12 items-center justify-center gap-8">
+                {!onForgot ? (
+                    <>
+                        <h2 className="font-semibold text-3xl">Login</h2>
+                        {error == null 
+                            ? <></> 
+                            : <h2 className="text-red-700 font-semibold text-xl">{error}</h2>
+                        }
 
-                <h2 className="font-semibold text-3xl">Login</h2>
-                {error == null 
-                    ? <></> 
-                    : <h2 className="text-red-700 font-semibold text-xl">{error}</h2>
-                }
+                        <form onSubmit={handleSubmit} className="flex flex-col gap-8 w-full">
+                            <div>
+                                <input 
+                                    type="text"
+                                    required
+                                    value={username}
+                                    onChange={(e) => setUsername(e.target.value)}
+                                    className="w-full border border-gray-300 rounded-xl p-3 focus:outline-none focus:border-black"
+                                    placeholder="Username"
+                                />
+                            </div>
+                            <div>
+                                <input 
+                                    type="password"
+                                    required
+                                    value={password}
+                                    onChange={(e) => setPassword(e.target.value)}
+                                    className="w-full border border-gray-300 rounded-xl p-3 focus:outline-none focus:border-black"
+                                    placeholder="Password"
+                                />
+                            </div>
 
-                <form onSubmit={handleSubmit} className="flex flex-col gap-8 w-full">
-                    <div>
-                        <input 
-                            type="text"
-                            required
-                            value={username}
-                            onChange={(e) => setUsername(e.target.value)}
-                            className="w-full border border-gray-300 rounded-xl p-3 focus:outline-none focus:border-black"
-                            placeholder="Username"
-                        />
-                    </div>
-                    <div>
-                        <input 
-                            type="password"
-                            required
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                            className="w-full border border-gray-300 rounded-xl p-3 focus:outline-none focus:border-black"
-                            placeholder="Password"
-                        />
-                    </div>
+                            <div className="flex gap-3 mt-2">
+                                <button 
+                                    type="submit"
+                                    className="flex-1 h-11 bg-black hover:bg-gray-800 text-white font-medium rounded-xl transition-colors"
+                                >
+                                    Login
+                                </button>
+                            </div>
+                        </form>
+                        <div className="flex flex-col justify-center items-center gap-2">
+                            <div className="flex flex-row gap-5">
+                                <h2 className="font-bold">
+                                    Not Registered?
+                                </h2>
+                                <Link
+                                    to='/register'
+                                    className="text-blue-900 hover:text-blue-700 transition-colors underline"
+                                >
+                                    Register now
+                                </Link>
+                            </div>
+                            <div className="flex flex-row gap-5">
+                                <h2 className="font-bold">
+                                    Forgot password?
+                                </h2>
+                                <button
+                                    onClick={() => setOnForgot(true)}
+                                    className="text-blue-900 hover:text-blue-700 transition-colors underline"
+                                >
+                                    Reset Password
+                                </button>
 
-                    <div className="flex gap-3 mt-2">
-                        <button 
-                            type="submit"
-                            className="flex-1 h-11 bg-black hover:bg-gray-800 text-white font-medium rounded-xl transition-colors"
+        
+                            </div>
+                        </div>
+                    </>
+            ) : (
+                <>
+                    <h2 className="font-semibold text-3xl">What is your email?</h2>
+                        {error == null 
+                            ? <></> 
+                            : <h2 className="text-red-700 font-semibold text-xl">{error}</h2>
+                        }
+
+                        <form onSubmit={handleForgotSubmit} className="flex flex-col gap-8 w-full">
+                            <div>
+                                <input 
+                                    type="text"
+                                    required
+                                    value={email}
+                                    onChange={(e) => setEmail(e.target.value)}
+                                    className="w-full border border-gray-300 rounded-xl p-3 focus:outline-none focus:border-black"
+                                    placeholder="Email"
+                                />
+                            </div>
+
+                            <div className="flex gap-3 mt-2">
+                                <button 
+                                    type="submit"
+                                    className="flex-1 h-11 bg-black hover:bg-gray-800 text-white font-medium rounded-xl transition-colors"
+                                >
+                                    Send reset link
+                                </button>
+                            </div>
+                        </form>
+                        <button
+                            onClick={() => setOnForgot(false)}
+                            className="text-blue-900 hover:text-blue-700 transition-colors underline"
                         >
-                            Login
+                            Go back?
                         </button>
-                    </div>
-                </form>
-                <div className="flex flex-row gap-5">
-                    <h2 className="font-bold">
-                        Not Registered?
-                    </h2>
-                    <Link
-                        to='/register'
-                        className="text-blue-900 hover:text-blue-700 transition-colors underline"
-                    >
-                        Register now
-                    </Link>
-                </div>
+                </>
+            )}
             </div>
 
             <div className="w-1/2 h-full overflow-hidden">
