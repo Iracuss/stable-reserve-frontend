@@ -18,16 +18,19 @@ export default function RegisterPage() {
         setError(null);
 
         try {
-            const data = await register({username, email, password});
+            await register({username, email, password});
 
             nav('/auth');
         } catch(err) {
             setError('User with email or username already exists');
+            console.error(err);
         } finally {
             setIsLoading(false)
         }
 
     }
+
+    if(isLoading) return <div className="p-10 text-center">Registering account...</div>;
 
     return (
         <div className="flex flex-row w-full h-screen">

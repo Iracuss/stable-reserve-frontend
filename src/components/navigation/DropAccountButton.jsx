@@ -1,10 +1,9 @@
-import AccountButton from "./AccountButton";
-import { useAuth } from "../AuthContext";
+import { useAuth } from "../auth/UseAuth";
 import { useNavigate } from "react-router-dom";
 
 
 export default function DropAccountButton({setIsOpen}) {
-    const {user, logoutUser} = useAuth();
+    const {logoutUser} = useAuth();
     const nav = useNavigate();
 
     const viewAccount = () => {

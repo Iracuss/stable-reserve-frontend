@@ -1,11 +1,11 @@
 import { Link } from "react-router-dom";
-import { useAuth } from "../AuthContext";
+import { useAuth } from "../auth/UseAuth";
 import { useState } from "react";
 import DropAccountButton from "./DropAccountButton";
 
 export default function AccountButton() {
     const [isOpen, setIsOpen] = useState(false);
-    const {user, logoutUser} = useAuth();
+    const {user} = useAuth();
 
     return (
         <div className="relative">

@@ -1,12 +1,9 @@
 import { useEffect, useState } from 'react';
-import { getAllHorses, createHorse, updateHorse } from '../api/horseService';
-import TopApp from '../components/navigation/TopBar';
+import { getAllHorses, createHorse } from '../api/horseService';
 import SideBar from '../components/dashboard/SideBar';
 import HorseContent from '../components/dashboard/HorseContent';
 import AddHorse from '../components/dashboard/AddHorse';
-import { Route, Routes } from 'react-router-dom';
-import LoginPage from './LoginPage';
-import { useAuth } from '../components/AuthContext';
+import { useAuth } from '../components/auth/UseAuth';
 
 export default function DashboardPage() {
     const {user} = useAuth();

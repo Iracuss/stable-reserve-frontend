@@ -1,4 +1,4 @@
-import { useAuth } from "../components/AuthContext";
+import { useAuth } from "../components/auth/UseAuth";
 import userIcon from "../assets/user-icon.png";
 import { getAllHorses } from "../api/horseService";
 import { useEffect, useState } from "react";

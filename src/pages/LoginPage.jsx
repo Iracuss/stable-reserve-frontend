@@ -1,7 +1,7 @@
 import { useState } from "react"
 import { login } from "../api/authService";
 import { Link, useNavigate } from "react-router-dom";
-import { useAuth } from "../components/AuthContext";
+import { useAuth } from "../components/auth/UseAuth";
 import { getMyAccount } from "../api/userService";
 import horseRunning from '../assets/horse-running.jpg';
 
@@ -20,17 +20,20 @@ export default function LoginPage() {
         setError(null);
 
         try {
-            const data = await login({username, password});
+            await login({username, password});
             const user = await getMyAccount();
 
             loginUser(user);
             nav("/");
         } catch(err) {
             setError("Invalid credentials. Please try again.");
+            console.error(err);
         } finally {
             setIsLoading(false);
         }
     }
+
+    if(isLoading) return <div className="p-10 text-center">Logging in...</div>;
 
     return (
         <div className="flex flex-row w-full h-screen">

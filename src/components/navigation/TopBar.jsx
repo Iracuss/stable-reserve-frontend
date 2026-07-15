@@ -8,7 +8,7 @@ export default function TopBar() {
                 <Link
                     to='/'
                 >
-                    <h1 className="text-2xl font-bold text-gray-800">Stable Manager</h1>
+                    <h1 className="text-2xl font-bold text-gray-800">Stable Reserve</h1>
                 </Link>
                 <AccountButton />
             </div>

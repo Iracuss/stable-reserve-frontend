@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { deleteAccount } from "../../api/userService";
-import { useAuth } from "../AuthContext";
+import { useAuth } from "../auth/UseAuth";
 
 export default function AccountDeleteButtons({setIsDeleting}) {
     const {user, logoutUser} = useAuth();
