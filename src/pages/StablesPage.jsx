@@ -2,9 +2,16 @@ import { useEffect, useState } from "react";
 import StableCard from "../components/stables/StableCard";
 import { getAllUserStables } from "../api/StableService";
 
+// You will import these once you build them:
+// import CreateStableForm from "../components/stables/CreateStableForm";
+// import EditStableForm from "../components/stables/EditStableForm";
+
 export default function StablesPage() {
     const [isLoading, setIsLoading] = useState(false);
     const [stables, setStables] = useState([]);
+    
+    const [isCreating, setIsCreating] = useState(false);
+    const [editingStable, setEditingStable] = useState(null);
 
     useEffect(() => {
         setIsLoading(true);
@@ -14,26 +21,91 @@ export default function StablesPage() {
             setIsLoading(false);
         })
         .catch((err) => {
-            // Handle error
             console.error('Failed to get all stables:', err);
             setIsLoading(false);
         });
     }, []);
 
-    if(isLoading) return <div className="p-10 text-center">Loading your stables...</div>;
+    const handleEdit = (stable) => {
+        setEditingStable(stable)
+    };
+
+    const handleDelete = (stable) => {
+        console.log("Delete triggered for:", stable.name);
+    }
     
+    const handleLeave = (stable) => {
+        console.log("Leave triggered for:", stable.name);
+    }
+    
+    const handleInvite = (stable, email, role) => {
+        console.log(`Sending invite to ${email} as ${role} for stable: ${stable.name}`);
+    };
+
+    const resetViews = () => {
+        setIsCreating(false);
+        setEditingStable(null);
+    };
+
+    if(isLoading) return <div className="p-10 text-center text-lg text-gray-600">Loading your stables...</div>;
+    
+    const isDefaultView = !isCreating && !editingStable;
+
     return (
-        <div className="w-screen h-screen p-12">
-            {/* Select stables */}
-            <div className="flex flex-col border border-gray-200 shadow-md rounded-4xl h-full w-full p-8 gap-4">
-                {stables.map((stable) => (
-                    <StableCard 
-                        key={stable.id}
-                        stable={stable} 
-                    />
-                ))}
+        <div className="flex flex-col w-screen h-screen p-8 gap-8 justify-between bg-gray-50">
+            
+            {/* MAIN VIEWPORT */}
+            <div className="flex flex-col border border-gray-200 bg-white shadow-md rounded-4xl h-full w-full p-8 gap-4 overflow-y-auto">
+                {isCreating ? (
+                    <div className="flex justify-center items-center h-full text-gray-500">
+                        Create Stable Form Component Goes Here
+                    </div>
+                ) : editingStable ? (
+                    <div className="flex flex-col justify-center items-center h-full text-gray-500 gap-4">
+                        <h2 className="text-xl text-black">Editing: {editingStable.name}</h2>
+                        Edit Stable Form Component Goes Here
+                    </div>
+                ) : (
+                    <>
+                        <h2 className="text-2xl font-bold mb-2">My Stables</h2>
+                        {stables.length > 0 ? (
+                            stables.map((stable) => (
+                                <StableCard 
+                                    key={stable.id}
+                                    stable={stable} 
+                                    onEdit={handleEdit}
+                                    onDelete={handleDelete}
+                                    onLeave={handleLeave}
+                                    onInvite={handleInvite}
+                                />
+                            ))
+                        ) : (
+                            <div className="flex justify-center items-center h-full text-gray-500 italic">
+                                You don't have any stables yet. Click below to create one!
+                            </div>
+                        )}
+                    </>
+                )}
             </div>
-            {/* Add stable */}
+
+            {/* BOTTOM ACTION BUTTON */}
+            <div className="flex justify-center items-center px-12 shrink-0">
+                {isDefaultView ? (
+                    <button 
+                        onClick={() => setIsCreating(true)}
+                        className="w-1/2 p-4 font-semibold text-xl rounded-2xl bg-blue-100 hover:bg-blue-200 text-blue-900 transition-colors shadow-sm"
+                    >
+                        Create New Stable
+                    </button>
+                ) : (
+                    <button 
+                        onClick={resetViews}
+                        className="w-1/2 p-4 font-semibold text-xl rounded-2xl bg-gray-200 hover:bg-gray-300 text-gray-800 transition-colors shadow-sm"
+                    >
+                        &larr; Back to My Stables
+                    </button>
+                )}
+            </div>
 
         </div>
     )
