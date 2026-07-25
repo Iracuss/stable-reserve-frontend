@@ -85,7 +85,7 @@ export default function AccountPage() {
                 : <AccountDeleteButtons setIsDeleting={setIsDeleting} />
             }
 
-            <h1 className="text-4xl font-bold border-b-3">Horses</h1>
+            {/* <h1 className="text-4xl font-bold border-b-3">Horses</h1> */}
             {/* {isLoading 
                 ? <main className="flex-1 flex pt-24 items-start justify-center">
                     <p className="text-xl text-gray-400 font-medium">

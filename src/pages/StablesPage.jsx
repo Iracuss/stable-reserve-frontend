@@ -2,9 +2,8 @@ import { useEffect, useState } from "react";
 import StableCard from "../components/stables/StableCard";
 import { getAllUserStables } from "../api/StableService";
 
-// You will import these once you build them:
-// import CreateStableForm from "../components/stables/CreateStableForm";
-// import EditStableForm from "../components/stables/EditStableForm";
+import CreateStableForm from "../components/stables/CreateStableForm";
+import EditStableForm from "../components/stables/EditStableForm";
 
 export default function StablesPage() {
     const [isLoading, setIsLoading] = useState(false);
@@ -52,19 +51,15 @@ export default function StablesPage() {
     const isDefaultView = !isCreating && !editingStable;
 
     return (
-        <div className="flex flex-col w-screen h-screen p-8 gap-8 justify-between bg-gray-50">
+        <div className="flex flex-col w-screen h-screen p-8 gap-8 justify-between bg-gray-50 overflow-hidden">
             
             {/* MAIN VIEWPORT */}
-            <div className="flex flex-col border border-gray-200 bg-white shadow-md rounded-4xl h-full w-full p-8 gap-4 overflow-y-auto">
+            <div className="flex flex-col border border-gray-200 bg-white shadow-md rounded-4xl flex-1 min-h-0 w-full p-8 gap-4 overflow-y-auto">
                 {isCreating ? (
-                    <div className="flex justify-center items-center h-full text-gray-500">
-                        Create Stable Form Component Goes Here
-                    </div>
+                        <CreateStableForm />
+
                 ) : editingStable ? (
-                    <div className="flex flex-col justify-center items-center h-full text-gray-500 gap-4">
-                        <h2 className="text-xl text-black">Editing: {editingStable.name}</h2>
-                        Edit Stable Form Component Goes Here
-                    </div>
+                        <EditStableForm editingStable={editingStable} />
                 ) : (
                     <>
                         <h2 className="text-2xl font-bold mb-2">My Stables</h2>

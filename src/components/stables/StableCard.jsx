@@ -50,7 +50,7 @@ export default function StableCard({ stable, onEdit, onDelete, onInvite, onLeave
     return (
         <div 
             onClick={handleCardClick}
-            className="flex flex-col w-full bg-white rounded-2xl border border-gray-200 shadow-sm hover:border-blue-300 hover:shadow-md transition-all cursor-pointer overflow-hidden group"
+            className="shrink-0 flex flex-col w-full bg-white rounded-2xl border border-gray-200 shadow-sm hover:border-blue-300 hover:shadow-md transition-all cursor-pointer overflow-hidden group"
         >
             {/* MAIN CARD ROW */}
             <div className="flex w-full px-8 py-6 items-center justify-between">

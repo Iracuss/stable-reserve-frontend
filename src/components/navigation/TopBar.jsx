@@ -7,7 +7,7 @@ export default function TopBar() {
     const {user} = useAuth();
 
     return (
-        <div className="flex flex-col">
+        <div className="flex flex-col relative z-10">
             <div className="flex justify-between items-center bg-gray-100 shadow-md py-4 px-6 rounded-b-xl">
                 <Link
                     to='/'
