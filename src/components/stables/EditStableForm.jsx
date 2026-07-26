@@ -1,4 +1,33 @@
-export default function EditStableForm({editingStable}) {
+import { useState } from "react";
+import { updateStable } from "../../api/stableService";
+
+export default function EditStableForm({onEdit, editingStable}) {
+    const [name, setName] = useState(editingStable.name);
+    const [coggins, setCoggins] = useState(editingStable.preferences.overdueCogginsDays);
+    const [farrier, setFarrier] = useState(editingStable.preferences.overdueFarrierDays);
+    const [email, setEmail] = useState(editingStable.preferences.emailNotification);
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+
+        try{
+            const stableEdit = {
+                "name": name,
+                "preferences": {
+                    "overdueCogginsDays": Number(coggins),
+                    "overdueFarrierDays": Number(farrier),
+                    "emailNotification": email
+                }
+            }
+
+            await updateStable(editingStable.id, stableEdit);
+            onEdit({...editingStable, ...stableEdit});
+        } catch(error) {
+            console.error('Failed to edit stable:', error);
+            alert('Failed to edit stable:', error.message);
+            throw error;
+        }
+    }
 
     return (
         <div className="flex flex-col w-full max-w-2xl mx-auto gap-8 pb-4">
@@ -7,7 +36,7 @@ export default function EditStableForm({editingStable}) {
                 <h1 className="text-3xl font-bold text-gray-900">Editing {editingStable.name}</h1>
             </div>
 
-            <form className="flex flex-col gap-6" onSubmit={(e) => e.preventDefault()}>
+            <form className="flex flex-col gap-6" onSubmit={handleSubmit}>
                 
                 {/* Stable Name Input */}
                 <div className="flex flex-col gap-2">
@@ -17,7 +46,8 @@ export default function EditStableForm({editingStable}) {
                     <input 
                         type="text" 
                         placeholder="e.g. Whispering Pines Equestrian" 
-                        defaultValue={editingStable.name}
+                        defaultValue={name}
+                        onChange={(e) => setName(e.target.value)}
                         required
                         className="w-full px-5 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                     />
@@ -36,7 +66,8 @@ export default function EditStableForm({editingStable}) {
                             <input 
                                 type="number" 
                                 placeholder="365" 
-                                defaultValue={editingStable.preferences.overdueCogginsDays}
+                                defaultValue={coggins}
+                                onChange={(e) => setCoggins(e.target.value)}
                                 required
                                 className="w-full px-5 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                             />
@@ -51,7 +82,8 @@ export default function EditStableForm({editingStable}) {
                             <input 
                                 type="number" 
                                 placeholder="42"
-                                defaultValue={editingStable.preferences.overdueFarrierDays}
+                                defaultValue={farrier}
+                                onChange={(e) => setFarrier(e.target.value)}
                                 required
                                 className="w-full px-5 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                             />
@@ -70,7 +102,8 @@ export default function EditStableForm({editingStable}) {
                             <input 
                                 type="checkbox" 
                                 className="sr-only peer" 
-                                defaultChecked={editingStable.preferences.emailNotification} 
+                                checked={email} 
+                                onChange={(e) => setEmail(e.target.checked)}
                             />
                             <div className="w-11 h-6 bg-gray-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
                         </label>
@@ -84,7 +117,7 @@ export default function EditStableForm({editingStable}) {
                     type="submit"
                     className="w-full mt-2 bg-blue-600 text-white font-bold text-lg py-4 rounded-xl hover:bg-blue-700 active:bg-blue-800 transition-colors shadow-sm shrink-0"
                 >
-                    Create Stable
+                    Edit Stable
                 </button>
             </form>
         </div>

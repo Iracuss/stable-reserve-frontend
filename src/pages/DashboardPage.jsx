@@ -47,7 +47,7 @@ export default function DashboardPage() {
             console.error('Failed to get all horses:', err);
             setIsLoading(false);
         });
-    }, [user]);
+    }, [user, stableId]);
 
     const handleSaveHorse = (newHorseData) => {
         createHorse(stableId, newHorseData)

@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
 import StableCard from "../components/stables/StableCard";
-import { getAllUserStables } from "../api/StableService";
+import { deleteStable, getAllUserStables } from "../api/stableService";
 
 import CreateStableForm from "../components/stables/CreateStableForm";
 import EditStableForm from "../components/stables/EditStableForm";
+import ConfirmPopup from "../components/general/ConfirmPopup";
+import { useNavigate } from "react-router-dom";
 
 export default function StablesPage() {
     const [isLoading, setIsLoading] = useState(false);
@@ -11,6 +13,9 @@ export default function StablesPage() {
     
     const [isCreating, setIsCreating] = useState(false);
     const [editingStable, setEditingStable] = useState(null);
+    const [stableToDelete, setStableToDelete] = useState(null);
+
+    const nav = useNavigate();
 
     useEffect(() => {
         setIsLoading(true);
@@ -26,13 +31,44 @@ export default function StablesPage() {
     }, []);
 
     const handleEdit = (stable) => {
-        setEditingStable(stable)
+        setEditingStable(stable);
     };
 
-    const handleDelete = (stable) => {
-        console.log("Delete triggered for:", stable.name);
+    const handleStableEdit = (editedStable) => {
+        setStables(prevStables => prevStables.map(s => 
+            s.id === editedStable.id ? editedStable : s
+        ));
+        setEditingStable(null);
+    };
+
+    // const handleDelete = (stable) => {
+    //     console.log("Delete triggered for:", stable.name);
+    // }
+
+    const handleDeleteClick = (stable) => {
+
+        setStableToDelete(stable);
     }
-    
+
+    const confirmDelete = async () => {
+        if (!stableToDelete) return;
+        
+        try {
+            await deleteStable(stableToDelete.id);
+            console.log("Confirmed delete for:", stableToDelete.name);
+            
+            // Remove it from the local UI list
+            setStables(prev => prev.filter(s => s.id !== stableToDelete.id));
+            
+            // Close the popup
+            setStableToDelete(null);
+        } catch (error) {
+            console.error("Failed to delete", error);
+            alert("Failed to delete", error);
+            throw error;
+        }
+    }
+
     const handleLeave = (stable) => {
         console.log("Leave triggered for:", stable.name);
     }
@@ -40,6 +76,12 @@ export default function StablesPage() {
     const handleInvite = (stable, email, role) => {
         console.log(`Sending invite to ${email} as ${role} for stable: ${stable.name}`);
     };
+
+    const handleCreate = (savedStable) => {
+        nav(`/dashboard/${savedStable.id}`);
+        setStables([...stables, savedStable]);
+        console.log('Creating stable');
+    }
 
     const resetViews = () => {
         setIsCreating(false);
@@ -56,10 +98,16 @@ export default function StablesPage() {
             {/* MAIN VIEWPORT */}
             <div className="flex flex-col border border-gray-200 bg-white shadow-md rounded-4xl flex-1 min-h-0 w-full p-8 gap-4 overflow-y-auto">
                 {isCreating ? (
-                        <CreateStableForm />
+                        <CreateStableForm
+                            onCreate={handleCreate}
+                            setIsCreating={setIsCreating}
+                        />
 
                 ) : editingStable ? (
-                        <EditStableForm editingStable={editingStable} />
+                        <EditStableForm 
+                            onEdit={handleStableEdit}
+                            editingStable={editingStable} 
+                        />
                 ) : (
                     <>
                         <h2 className="text-2xl font-bold mb-2">My Stables</h2>
@@ -69,7 +117,7 @@ export default function StablesPage() {
                                     key={stable.id}
                                     stable={stable} 
                                     onEdit={handleEdit}
-                                    onDelete={handleDelete}
+                                    onDelete={handleDeleteClick}
                                     onLeave={handleLeave}
                                     onInvite={handleInvite}
                                 />
@@ -101,6 +149,18 @@ export default function StablesPage() {
                     </button>
                 )}
             </div>
+
+            <ConfirmPopup 
+                isOpen={!!stableToDelete}
+                onClose={() => setStableToDelete(null)}
+                onConfirm={confirmDelete}
+                title="Delete Stable?"
+                message={
+                    <>
+                        Are you sure you want to delete <span className="font-bold text-gray-900">"{stableToDelete?.name}"</span>? This action cannot be undone and will remove all associated horses and members.
+                    </>
+                }
+            />
 
         </div>
     )
