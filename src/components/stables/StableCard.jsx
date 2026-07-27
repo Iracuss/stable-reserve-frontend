@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { sendStableInvite } from "../../api/inviteService";
 
 export default function StableCard({ stable, onEdit, onDelete, onInvite, onLeave }) {
     const navigate = useNavigate();
@@ -7,7 +8,7 @@ export default function StableCard({ stable, onEdit, onDelete, onInvite, onLeave
     // Local state to handle the inline invite form
     const [showInviteForm, setShowInviteForm] = useState(false);
     const [inviteEmail, setInviteEmail] = useState("");
-    const [inviteRole, setInviteRole] = useState("MEMBER");
+    const [inviteRole, setInviteRole] = useState("STAFF");
 
     const ownerName = stable.ownerUsername || "Unknown";
     const memberCount = stable.memberCount || 0; 
@@ -35,15 +36,21 @@ export default function StableCard({ stable, onEdit, onDelete, onInvite, onLeave
         setShowInviteForm(!showInviteForm);
     };
 
-    const handleSendInvite = (e) => {
+    const handleSendInvite = async (e) => {
         e.preventDefault();
         e.stopPropagation();
         if(onInvite) {
+            const inviteData = {
+                "email": inviteEmail,
+                "role": inviteRole
+            }
+            await sendStableInvite(stable.id, inviteData);
             onInvite(stable, inviteEmail, inviteRole);
         }
+
         // Reset and close after sending
         setInviteEmail("");
-        setInviteRole("MEMBER");
+        setInviteRole("STAFF");
         setShowInviteForm(false);
     };
 
@@ -60,7 +67,7 @@ export default function StableCard({ stable, onEdit, onDelete, onInvite, onLeave
                             {stable.name}
                         </h1>
                         <span className="px-2 py-1 bg-blue-100 text-blue-800 text-xs font-bold uppercase tracking-wider rounded-md">
-                            {role || "MEMBER"}
+                            {role || "STAFF"}
                         </span>
                     </div>
                     <p className="text-gray-500 text-sm">
@@ -141,7 +148,7 @@ export default function StableCard({ stable, onEdit, onDelete, onInvite, onLeave
                             onChange={(e) => setInviteRole(e.target.value)}
                             className="px-4 py-2 rounded-lg border border-gray-300 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 font-semibold text-gray-700"
                         >
-                            <option value="MEMBER">Member</option>
+                            <option value="STAFF">Staff</option>
                             <option value="MANAGER">Manager</option>
                         </select>
                         <button 

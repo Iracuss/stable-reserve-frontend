@@ -6,6 +6,7 @@ import CreateStableForm from "../components/stables/CreateStableForm";
 import EditStableForm from "../components/stables/EditStableForm";
 import ConfirmPopup from "../components/general/ConfirmPopup";
 import { useNavigate } from "react-router-dom";
+import { acceptStableInvite } from "../api/inviteService";
 
 export default function StablesPage() {
     const [isLoading, setIsLoading] = useState(false);
@@ -64,13 +65,21 @@ export default function StablesPage() {
             setStableToDelete(null);
         } catch (error) {
             console.error("Failed to delete", error);
-            alert("Failed to delete", error);
+            alert("Failed to delete", error.message);
             throw error;
         }
     }
 
-    const handleLeave = (stable) => {
-        console.log("Leave triggered for:", stable.name);
+    const handleLeave = async (stable) => {
+        try{
+            await acceptStableInvite(stable.id, {"accepted": false});
+            console.log("Leave triggered for:", stable.name);
+            setStables(prev => prev.filter(s => s.id !== stable.id));
+        } catch(error) {
+            console.error("Failed to leave", error);
+            alert("Failed to leave", error.message);
+            throw error;
+        }
     }
     
     const handleInvite = (stable, email, role) => {
