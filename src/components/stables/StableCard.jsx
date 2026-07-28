@@ -1,27 +1,35 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { sendStableInvite } from "../../api/inviteService";
+import MemberListItem from "./MemberListItem";
+import { getAllUsersInStable, kickUserFromStable } from "../../api/stableService";
 
 export default function StableCard({ stable, onEdit, onDelete, onInvite, onLeave }) {
     const navigate = useNavigate();
     
-    // Local state to handle the inline invite form
+    // Form and List visibility state
     const [showInviteForm, setShowInviteForm] = useState(false);
+    const [showUserList, setShowUserList] = useState(false);
+    
+    // Invite form state
     const [inviteEmail, setInviteEmail] = useState("");
     const [inviteRole, setInviteRole] = useState("STAFF");
+
+    // Members list state
+    const [members, setMembers] = useState([]);
+    const [isLoadingMembers, setIsLoadingMembers] = useState(false);
+    const [hasFetchedMembers, setHasFetchedMembers] = useState(false); // Tracks if we already fetched
 
     const ownerName = stable.ownerUsername || "Unknown";
     const memberCount = stable.memberCount || 0; 
     const horseCount = stable.horseCount || 0;
     
     const role = stable.currentUserRole;
-    
     const isOwner = role === "OWNER";
     const canEdit = role === "OWNER" || role === "MANAGER";
 
     const handleCardClick = () => {
-        // Don't navigate if they are interacting with the invite form
-        if (!showInviteForm) {
+        if (!showInviteForm && !showUserList) {
             navigate(`/dashboard/${stable.id}`);
         }
     };
@@ -34,6 +42,43 @@ export default function StableCard({ stable, onEdit, onDelete, onInvite, onLeave
     const toggleInviteForm = (e) => {
         e.stopPropagation();
         setShowInviteForm(!showInviteForm);
+        if (!showInviteForm) setShowUserList(false);
+    };
+
+    const handleKickUser = async (userIdToKick) => {
+        // Optional: Add a standard browser confirmation window just so people don't misclick
+        if (!window.confirm("Are you sure you want to kick this user?")) return;
+
+        try {
+            await kickUserFromStable(userIdToKick, stable.id);
+            setMembers(prevMembers => prevMembers.filter(m => m.userId !== userIdToKick));
+        } catch (error) {
+            console.error("Failed to kick user:", error);
+            alert("Failed to kick user. Please try again.");
+        }
+    };
+
+    const toggleUserList = async (e) => {
+        e.stopPropagation();
+        
+        // If we are about to open the list and haven't fetched members yet
+        if (!showUserList && !hasFetchedMembers) {
+            setIsLoadingMembers(true);
+            try {
+
+                const data = await getAllUsersInStable(stable.id);
+                setMembers(data);
+                
+                setHasFetchedMembers(true);
+            } catch (error) {
+                console.error("Failed to load members", error);
+            } finally {
+                setIsLoadingMembers(false);
+            }
+        }
+        
+        setShowUserList(!showUserList);
+        if (!showUserList) setShowInviteForm(false);
     };
 
     const handleSendInvite = async (e) => {
@@ -43,12 +88,10 @@ export default function StableCard({ stable, onEdit, onDelete, onInvite, onLeave
             const inviteData = {
                 "email": inviteEmail,
                 "role": inviteRole
-            }
+            };
             await sendStableInvite(stable.id, inviteData);
             onInvite(stable, inviteEmail, inviteRole);
         }
-
-        // Reset and close after sending
         setInviteEmail("");
         setInviteRole("STAFF");
         setShowInviteForm(false);
@@ -87,6 +130,13 @@ export default function StableCard({ stable, onEdit, onDelete, onInvite, onLeave
                 </div>
 
                 <div className="flex w-1/3 justify-end items-center gap-3">
+                    <button 
+                        onClick={toggleUserList}
+                        className={`px-4 py-2 text-sm font-semibold rounded-lg transition-colors ${showUserList ? 'bg-gray-600 text-white' : 'text-gray-600 bg-gray-100 hover:bg-gray-200'}`}
+                    >
+                        {showUserList ? "Close" : "Members"}
+                    </button>
+
                     {canEdit && (
                         <>
                             <button 
@@ -122,17 +172,50 @@ export default function StableCard({ stable, onEdit, onDelete, onInvite, onLeave
 
                     {!canEdit && (
                         <span className="text-blue-500 font-semibold group-hover:underline pr-2 ml-2">
-                            View Dashboard &rarr;
+                            Dashboard &rarr;
                         </span>
                     )}
                 </div>
             </div>
 
-            {/* INLINE INVITE FORM (Drops down when Invite is clicked) */}
+            {/* INLINE USER LIST FORM (Scrollable container) */}
+            {showUserList && (
+                <div 
+                    className="bg-gray-50 border-t border-gray-200 px-8 py-6 cursor-default max-h-72 overflow-y-auto"
+                    onClick={(e) => e.stopPropagation()} 
+                >
+                    <h3 className="text-sm font-bold text-gray-600 uppercase tracking-wider mb-4">
+                        Stable Members
+                    </h3>
+                    
+                    <div className="flex flex-col gap-2">
+                        {isLoadingMembers ? (
+                            <div className="text-center py-4 text-gray-500 text-sm font-medium">
+                                Loading members...
+                            </div>
+                        ) : members.length === 0 ? (
+                            <div className="text-center py-4 text-gray-500 text-sm">
+                                No members found.
+                            </div>
+                        ) : (
+                            members.map(member => (
+                                <MemberListItem 
+                                    key={member.id} 
+                                    member={member} 
+                                    currentUserRole={role} 
+                                    onKick={handleKickUser}
+                                />
+                            ))
+                        )}
+                    </div>
+                </div>
+            )}
+
+            {/* INLINE INVITE FORM */}
             {showInviteForm && (
                 <div 
                     className="bg-blue-50 border-t border-blue-100 px-8 py-4 flex gap-4 items-center justify-between cursor-default"
-                    onClick={(e) => e.stopPropagation()} // Stop typing from triggering the card link
+                    onClick={(e) => e.stopPropagation()} 
                 >
                     <div className="flex gap-4 w-full items-center">
                         <input 

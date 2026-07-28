@@ -102,7 +102,7 @@ export default function StablesPage() {
     const isDefaultView = !isCreating && !editingStable;
 
     return (
-        <div className="flex flex-col w-screen h-screen p-8 gap-8 justify-between bg-gray-50 overflow-hidden">
+        <div className="flex flex-col w-full h-full p-8 gap-8 justify-between bg-gray-50 overflow-hidden">
             
             {/* MAIN VIEWPORT */}
             <div className="flex flex-col border border-gray-200 bg-white shadow-md rounded-4xl flex-1 min-h-0 w-full p-8 gap-4 overflow-y-auto">

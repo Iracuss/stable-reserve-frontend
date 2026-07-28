@@ -11,6 +11,17 @@ export const getAllUserStables = async () => {
     }
 }
 
+export const getAllUsersInStable = async (stableId) => {
+    try {
+        const response = await apiClient.get(`/stables/${stableId}/all`);
+
+        return response.data
+    } catch(error) {
+        console.error('Error getting users in stable:', error);
+        throw error;
+    }
+}
+
 export const deleteStable = async (stableId) => {
     try {
         const response = await apiClient.delete(`/stables/${stableId}`);
@@ -40,6 +51,17 @@ export const createStable = async (stableData) => {
         return response.data
     } catch(error) {
         console.error('Error creating stable:', error);
+        throw error;
+    }
+}
+
+export const kickUserFromStable = async (userId, stableId) => {
+    try {
+        const response = await apiClient.delete(`/stables/kick/${userId}/${stableId}`);
+        
+        return response.data;
+    } catch(error) {
+        console.error('Error kicking user:', error);
         throw error;
     }
 }

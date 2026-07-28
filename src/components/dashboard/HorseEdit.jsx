@@ -1,4 +1,5 @@
-import { useState, useParams } from "react";
+import { useState } from "react";
+import { useParams } from "react-router-dom";
 import { updateHorse } from "../../api/horseService";
 
 export default function HorseEdit({horse, onEdit, setActiveTab}) {

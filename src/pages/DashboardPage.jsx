@@ -65,7 +65,7 @@ export default function DashboardPage() {
     if(isLoading) return <div className="p-10 text-center">Loading your stable...</div>;
 
     return (
-        <div className="flex flex-col h-screen bg-gray-50 overflow-hidden">
+        <div className="flex flex-col h-full bg-gray-50 overflow-hidden">
             <div className="flex flex-1 overflow-hidden">
                 <SideBar 
                     horses={horses} 
