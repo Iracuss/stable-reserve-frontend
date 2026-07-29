@@ -5,10 +5,13 @@ import { deleteHorse } from "../../api/horseService";
 import HorseEdit from "./HorseEdit";
 import HorseDates from "./HorseDates";
 import { isOverdue } from "../utils/dateHelper";
+import { useParams } from "react-router-dom";
+import ConfirmPopup from "../general/ConfirmPopup";
 
 export default function HorseContent({horse, onDeleteSuccess, onEdit}) {
-
+    const {stableId} = useParams();
     const [activeTab, setActiveTab] = useState('overview');
+    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
     if(!horse) {
         return (
@@ -23,16 +26,17 @@ export default function HorseContent({horse, onDeleteSuccess, onEdit}) {
     const cogginsWarning = isOverdue(horse.lastCogginDate, 365);
     const farrierWarning = isOverdue(horse.lastFarrierDate, 42);
 
-    const deleteCurrentHorse = async (horseId) => {
+    const confirmDelete = async () => {
         try {
             console.log('clicked delete');
             // Need to make a thing to check if we are sure but later
 
-            await deleteHorse(horseId);
-            onDeleteSuccess(horseId);
-            alert("Deleted horse")
+            await deleteHorse(stableId, horse.id);
+            onDeleteSuccess(horse.id);
+            setIsDeleteModalOpen(false);
         } catch(error) {
             console.error('Failed to delete horse:', error);
+            alert('Failed to delete horse:', error.message);
             throw error;
         }
     }
@@ -72,12 +76,24 @@ export default function HorseContent({horse, onDeleteSuccess, onEdit}) {
                         Edit
                     </button>
                     <button
-                        onClick={() => deleteCurrentHorse(horse.id)}
+                        onClick={() => setIsDeleteModalOpen(true)}
                         className={`font-bold text-lg text-red-600 border-b-2 border-red-600 hover:text-red-500 hover:border-red-500 active:text-red-400 active:border-red-400 transition-colors`}
                     >
                         Delete
                     </button>
                 </div>
+
+                            <ConfirmPopup 
+                                isOpen={isDeleteModalOpen}
+                                onClose={() => setIsDeleteModalOpen(false)}
+                                onConfirm={confirmDelete}
+                                title={`Delete ${horse.name}?`}
+                                message={
+                                    <>
+                                        Are you sure you want to delete <span className="font-bold text-gray-900">"{horse.name}"</span>? This action cannot be undone.
+                                    </>
+                                }
+                            />
 
                 <div className="w-full bg-white shadow-sm rounded-xl border border-gray-200 p-8">
                     {activeTab === 'overview' && <HorseOverview horse={horse} key={horse.id} />}

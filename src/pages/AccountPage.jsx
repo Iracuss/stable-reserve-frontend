@@ -1,38 +1,38 @@
 import { useAuth } from "../components/auth/UseAuth";
 import userIcon from "../assets/user-icon.png";
-import { getAllHorses } from "../api/horseService";
-import { useEffect, useState } from "react";
-import AccountHorseContainer from "../components/account/AccountHorseContainer";
+// import { getAllHorses, getAllHorsesInStable } from "../api/horseService";
+import { useState } from "react";
+// import AccountHorseContainer from "../components/account/AccountHorseContainer";
 import AccountEditForm from "../components/account/AccountEditForm";
 import AccountDeleteButtons from "../components/account/AccountDeleteButtons";
 
 export default function AccountPage() {
     const {user} = useAuth();
 
-    const [horses, setHorses] = useState([]);
-    const [isLoading, setIsLoading] = useState(true);
+    // const [horses, setHorses] = useState([]);
+    // const [isLoading, setIsLoading] = useState(true);
 
     const [isEditing, setIsEditing] = useState(false);
     const [isDeleting, setIsDeleting] = useState(false);
 
-    useEffect(() => {
-        if(!user) {
-            setHorses([]);
-            setIsLoading(false);
-            return;
-        }
-        setIsLoading(true);
-        getAllHorses()
-        .then((data) => {
-            setHorses(data);
-            setIsLoading(false);
-        })
-        .catch((err) => {
-            // Handle error
-            console.error('Failed to get all horses:', err);
-            setIsLoading(false);
-        });
-    }, [user]);
+    // useEffect(() => {
+    //     if(!user) {
+    //         setHorses([]);
+    //         setIsLoading(false);
+    //         return;
+    //     }
+    //     setIsLoading(true);
+    //     getAllHorsesInStable()
+    //     .then((data) => {
+    //         setHorses(data);
+    //         setIsLoading(false);
+    //     })
+    //     .catch((err) => {
+    //         // Handle error
+    //         console.error('Failed to get all horses:', err);
+    //         setIsLoading(false);
+    //     });
+    // }, [user]);
 
     if(!user) {
         return (
@@ -85,15 +85,15 @@ export default function AccountPage() {
                 : <AccountDeleteButtons setIsDeleting={setIsDeleting} />
             }
 
-            <h1 className="text-4xl font-bold border-b-3">Horses</h1>
-            {isLoading 
+            {/* <h1 className="text-4xl font-bold border-b-3">Horses</h1> */}
+            {/* {isLoading 
                 ? <main className="flex-1 flex pt-24 items-start justify-center">
                     <p className="text-xl text-gray-400 font-medium">
                         Loading horses...
                     </p>
                 </main>
                 : <AccountHorseContainer horses={horses} />
-            }
+            } */}
 
 
         </div>

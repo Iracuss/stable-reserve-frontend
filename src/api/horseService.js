@@ -1,10 +1,10 @@
 import { apiClient } from "./client";
 
-export const getAllHorses = async () => {
+export const getAllHorsesInStable = async (stableId) => {
     try {
         const token = localStorage.getItem('jwt_token');
 
-        const response = await apiClient.get('/horses', {
+        const response = await apiClient.get(`/horses/${stableId}`, {
             headers: {Authorization: `Bearer ${token}`}
         });
 
@@ -15,9 +15,9 @@ export const getAllHorses = async () => {
     }
 };
 
-export const createHorse = async (horseData) => {
+export const createHorse = async (stableId, horseData) => {
     try {
-        const response = await apiClient.post('/horses', horseData);
+        const response = await apiClient.post(`/horses/${stableId}`, horseData);
         return response.data;
     } catch(error) {
         console.error('Error creating horses:', error);
@@ -25,9 +25,9 @@ export const createHorse = async (horseData) => {
     }
 }
 
-export const deleteHorse = async (horseId) => {
+export const deleteHorse = async (stableId, horseId) => {
     try {
-        const response = await apiClient.delete(`/horses/${horseId}`);
+        const response = await apiClient.delete(`/horses/${stableId}/${horseId}`);
         return response.data;
     } catch(error) {
         console.error('Error deleting horses:', error);
@@ -35,9 +35,9 @@ export const deleteHorse = async (horseId) => {
     }
 }
 
-export const updateHorse = async (horseId, horseData) => {
+export const updateHorse = async (stableId, horseId, horseData) => {
     try {
-        const response = await apiClient.put(`/horses/${horseId}`, horseData);
+        const response = await apiClient.put(`/horses/${stableId}/${horseId}`, horseData);
         return response.data;
     } catch(error) {
         console.error('Error updating horse:', error);

@@ -1,7 +1,9 @@
 import { useState } from "react";
 import { updateHorse } from "../../api/horseService";
+import { useParams } from "react-router-dom";
 
 export default function HorseDates({horse, onEdit}) {
+    const {stableId} = useParams();
     const [cogginsDate, setCogginsDate] = useState('');
     const [farrierDate, setFarrierDate] = useState('');
 
@@ -21,7 +23,7 @@ export default function HorseDates({horse, onEdit}) {
             horseDateEdit.lastFarrierDate = finalFarrier;
         }
 
-        await updateHorse(horse.id, horseDateEdit);
+        await updateHorse(stableId, horse.id, horseDateEdit);
         onEdit({...horse, ...horseDateEdit});
     }
 

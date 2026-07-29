@@ -1,13 +1,15 @@
 import { useEffect, useState } from 'react';
-import { getAllHorses, createHorse } from '../api/horseService';
+import { getAllHorsesInStable, createHorse } from '../api/horseService';
 import SideBar from '../components/dashboard/SideBar';
 import HorseContent from '../components/dashboard/HorseContent';
 import AddHorse from '../components/dashboard/AddHorse';
 import { useAuth } from '../components/auth/UseAuth';
+import { useParams } from 'react-router-dom';
 
 export default function DashboardPage() {
     const {user} = useAuth();
 
+    const {stableId} = useParams();
     const [horses, setHorses] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [selectedHorse, setSelectedHorse] = useState(null);
@@ -35,7 +37,7 @@ export default function DashboardPage() {
             return;
         }
         setIsLoading(true);
-        getAllHorses()
+        getAllHorsesInStable(stableId)
         .then((data) => {
             setHorses(data);
             setIsLoading(false);
@@ -45,10 +47,10 @@ export default function DashboardPage() {
             console.error('Failed to get all horses:', err);
             setIsLoading(false);
         });
-    }, [user]);
+    }, [user, stableId]);
 
     const handleSaveHorse = (newHorseData) => {
-        createHorse(newHorseData)
+        createHorse(stableId, newHorseData)
             .then((savedHorse) => {
                 setHorses([...horses, savedHorse]);
                 setSelectedHorse(savedHorse);
@@ -63,7 +65,7 @@ export default function DashboardPage() {
     if(isLoading) return <div className="p-10 text-center">Loading your stable...</div>;
 
     return (
-        <div className="flex flex-col h-screen bg-gray-50 overflow-hidden">
+        <div className="flex flex-col h-full bg-gray-50 overflow-hidden">
             <div className="flex flex-1 overflow-hidden">
                 <SideBar 
                     horses={horses} 

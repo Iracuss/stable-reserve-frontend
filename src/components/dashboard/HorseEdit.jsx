@@ -1,7 +1,9 @@
 import { useState } from "react";
+import { useParams } from "react-router-dom";
 import { updateHorse } from "../../api/horseService";
 
 export default function HorseEdit({horse, onEdit, setActiveTab}) {
+    const {stableId} = useParams();
     const [name, setName] = useState(horse.name);
     const [breed, setBreed] = useState(horse.breed);
     const [birthYear, setBirthYear] = useState(horse.birthYear);
@@ -26,7 +28,7 @@ export default function HorseEdit({horse, onEdit, setActiveTab}) {
             medicalNotes: medicalNotes,
         }
 
-        await updateHorse(horse.id, horseData);
+        await updateHorse(stableId, horse.id, horseData);
         onEdit({...horse, ...horseData});
         setActiveTab('overview');
 

@@ -3,7 +3,7 @@ import { apiClient } from "./client";
 export const getMyAccount = async () => {
     try {
         // Check if we have a token first but for test this is fine
-        const response = await apiClient.get('users/me');
+        const response = await apiClient.get('/users/me');
 
         const user = response.data;
         localStorage.setItem('user_info', JSON.stringify(user));
